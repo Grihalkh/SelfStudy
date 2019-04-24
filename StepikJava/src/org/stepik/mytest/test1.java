@@ -18,7 +18,7 @@ public class test1 {
     
         System.out.println("Введите строку");
         String s;
-        s = scanner.nextLine();
+        s = "Hello";
         System.out.println("Сейчас строка поменяется на hi (а может и нет)");
         checkString(s);
         System.out.println(s);

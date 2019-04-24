@@ -10,7 +10,7 @@ public abstract class test{
                     break tp;
                 }
             }
-            System.out.println("i = "+i+" j = "+j);
+            // System.out.println("i = "+i+" j = "+j);
         }
     }
 }
