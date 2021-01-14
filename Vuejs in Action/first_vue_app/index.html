@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Vue.js Pet Depot</title>
+        <!-- Vue.js -->
+        <script src="https://unpkg.com/vue"></script>
+        <!-- jQuery -->
+        <script src="https://code.jquery.com/jquery-3.5.1.slim.js" integrity="sha256-DrT5NfxfbHvMHux31Lkhxg42LY6of8TaYyK50jnxRnM=" crossorigin="anonymous"></script>
+        <!-- Bootstrap -->
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
+        <!-- My CSS -->
+        <link rel="stylesheet" type="text/css" href="css/app.css">
+    </head>
+    <body>
+        <div id="app"class="jumbotron">
+            <header>
+                <!-- <h1 v-text="sitename"></h1> -->
+                <h1>{{ sitename }}</h1>
+            </header>
+            <main>
+                <div class="row product">
+                    <div class="col">
+                        <figure>
+                            <img :src="product.image" class="product">
+                            <!-- <img v-bind:src="product.image" class="product"> -->
+                        </figure>
+                    </div>
+                    <div class="col col-expand">
+                        <h1>{{ product.title }}</h1>
+                        <p v-html="product.description"></p>
+                        <p class="price">{{ product.price | formatPrice }}</p>
+                    </div>
+                </div>
+
+            </main>
+        </div>
+
+        <script type="text/javascript">
+            var webstore = new Vue({
+                el: "#app",
+                data: {
+                    sitename: "Vue.js Pet Depot",
+                    product: {
+                        id: 1001,
+                        title: "Cat Food, 25lb bag",
+                        description: "A 25 pound bag of <em>irresistable</em>, "+
+                                     "organic goodness for your cat.",
+                        price: 3599,
+                        image: "img/products/cat_food.jpg"
+                    }
+                },
+                filters: {
+                    formatPrice: function(price) {
+                        if (!parseFloat(price))
+                            return "";
+                        
+                        var priceArray = String(price).split("").reverse();
+                        var index = 0;
+                        
+                        while (priceArray.length > index + 3) {
+                            priceArray.splice(index+3, 0, " ");
+                            index += 4;
+                        }
+
+                        return priceArray.reverse().join("") + " ₽";
+                    }
+                }
+            });
+        </script>
+    </body>
+</html>
