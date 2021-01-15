@@ -1,24 +1,41 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>Vue.js Pet Depot</title>
-        <!-- Vue.js -->
-        <script src="https://unpkg.com/vue"></script>
-        <!-- jQuery -->
-        <script src="https://code.jquery.com/jquery-3.5.1.slim.js" integrity="sha256-DrT5NfxfbHvMHux31Lkhxg42LY6of8TaYyK50jnxRnM=" crossorigin="anonymous"></script>
-        <!-- Bootstrap -->
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
-        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
-        <!-- My CSS -->
-        <link rel="stylesheet" type="text/css" href="css/app.css">
-    </head>
-    <body>
-        <div id="app"class="jumbotron">
-            <header>
+
+<head>
+    <title>Vue.js Pet Depot</title>
+    <!-- Vue.js -->
+    <script src="https://unpkg.com/vue"></script>
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.js"
+        integrity="sha256-DrT5NfxfbHvMHux31Lkhxg42LY6of8TaYyK50jnxRnM=" crossorigin="anonymous"></script>
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+        integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
+        integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous">
+    </script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css"
+        integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous">
+    <!-- My CSS -->
+    <link rel="stylesheet" type="text/css" href="css/app.css">
+</head>
+
+<body>
+    <div id="app">
+        <header>
+            <div class="navbar navbar-light bg-light">
                 <!-- <h1 v-text="sitename"></h1> -->
-                <h1>{{ sitename }}</h1>
-            </header>
-            <main>
+                <a class="navbar-brand mb0 h1" href="#">{{ sitename }}</a>
+                <button class="btn btn-secondary" v-on:click="showCheckout">
+                    {{ cartItemCount }}
+                    <span class="fas fa-shopping-cart"></span>
+                    Checkout
+                </button>
+            </div>
+        </header>
+        <main class="jumbotron">
+            <div v-if="showProduct">
                 <div class="row product">
                     <div class="col">
                         <figure>
@@ -30,43 +47,72 @@
                         <h1>{{ product.title }}</h1>
                         <p v-html="product.description"></p>
                         <p class="price">{{ product.price | formatPrice }}</p>
+                        <!-- <button class="btn btn-primary" v-on:click="addToCart" v-show="canAddToCart">Add to cart</button> -->
+                        <button class="btn btn-primary" v-on:click="addToCart" v-if="canAddToCart">Add to cart</button>
+                        <button class="btn btn-primary disabled" v-else>Add to cart</button>
+                        <!-- <button class="btn btn-primary" @click="addToCart">Add to cart</button> -->
                     </div>
                 </div>
+            </div>
+            <div v-else>
 
-            </main>
-        </div>
+            </div>
 
-        <script type="text/javascript">
-            var webstore = new Vue({
-                el: "#app",
-                data: {
-                    sitename: "Vue.js Pet Depot",
-                    product: {
-                        id: 1001,
-                        title: "Cat Food, 25lb bag",
-                        description: "A 25 pound bag of <em>irresistable</em>, "+
-                                     "organic goodness for your cat.",
-                        price: 3599,
-                        image: "img/products/cat_food.jpg"
-                    }
+        </main>
+    </div>
+
+    <script type="text/javascript">
+        var webstore = new Vue({
+            el: "#app",
+            data: {
+                sitename: "Vue.js Pet Depot",
+                product: {
+                    id: 1001,
+                    title: "Cat Food, 25lb bag",
+                    description: "A 25 pound bag of <em>irresistable</em>, " +
+                        "organic goodness for your cat.",
+                    price: 3599,
+                    image: "img/products/cat_food.jpg",
+                    availableInventory: 5,
                 },
-                filters: {
-                    formatPrice: function(price) {
-                        if (!parseFloat(price))
-                            return "";
-                        
-                        var priceArray = String(price).split("").reverse();
-                        var index = 0;
-                        
-                        while (priceArray.length > index + 3) {
-                            priceArray.splice(index+3, 0, " ");
-                            index += 4;
-                        }
+                cart: [],
+                showProduct: true,
+            },
+            filters: {
+                formatPrice: function (price) {
+                    if (!parseFloat(price))
+                        return "";
 
-                        return priceArray.reverse().join("") + " ₽";
+                    var priceArray = String(price).split("").reverse();
+                    var index = 0;
+
+                    while (priceArray.length > index + 3) {
+                        priceArray.splice(index + 3, 0, " ");
+                        index += 4;
                     }
+
+                    return priceArray.reverse().join("") + " ₽";
                 }
-            });
-        </script>
-    </body>
+            },
+            methods: {
+                addToCart: function () {
+                    this.cart.push(this.product.id);
+                },
+                showCheckout: function () {
+                    this.showProduct = !this.showProduct;
+                },
+            },
+            computed: {
+                cartItemCount: function () {
+                    return this.cart.length || '';
+                },
+                // short syntax ES6
+                canAddToCart() {
+                    return this.product.availableInventory > this.cartItemCount;
+                }
+            },
+        });
+    </script>
+</body>
+
 </html>
