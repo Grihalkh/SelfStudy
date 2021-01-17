@@ -8,10 +8,20 @@ p {
 }
 
 img.product {
-    height:300px;
+    height: auto;
+    width: 300px;
     border-radius: 10px;
 }
 
 .price {
     font-weight: bold;
+}
+
+.inventory-message {
+    font-weight: bold;
+    padding-left: 30px;
+}
+
+.rating {
+    padding-top: 30px;
 }

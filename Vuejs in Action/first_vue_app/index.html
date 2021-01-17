@@ -17,6 +17,8 @@
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css"
         integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous">
+    <!-- Axios -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
     <!-- My CSS -->
     <link rel="stylesheet" type="text/css" href="css/app.css">
 </head>
@@ -37,22 +39,36 @@
         <main class="jumbotron">
             <div class="container">
                 <div v-if="showProduct">
-                    <div class="row product">
-                        <div class="col">
-                            <figure>
-                                <img :src="product.image" class="product">
-                                <!-- <img v-bind:src="product.image" class="product"> -->
-                            </figure>
-                        </div>
-                        <div class="col col-expand">
-                            <h1>{{ product.title }}</h1>
-                            <p v-html="product.description"></p>
-                            <p class="price">{{ product.price | formatPrice }}</p>
-                            <!-- <button class="btn btn-primary" v-on:click="addToCart" v-show="canAddToCart">Add to cart</button> -->
-                            <button class="btn btn-primary" v-on:click="addToCart" v-if="canAddToCart">Add to
-                                cart</button>
-                            <button class="btn btn-primary disabled" v-else>Add to cart</button>
-                            <!-- <button class="btn btn-primary" @click="addToCart">Add to cart</button> -->
+                    <div v-for="product in sortedProducts">
+                        <div class="row">
+                            <div class="col-6">
+                                <figure>
+                                    <img :src="product.image" class="product">
+                                    <!-- <img v-bind:src="product.image" class="product"> -->
+                                </figure>
+                            </div>
+                            <div class="col-6">
+                                <h1>{{ product.title }}</h1>
+                                <p v-html="product.description"></p>
+                                <p class="price">{{ product.price | formatPrice }}</p>
+                                <!-- <button class="btn btn-primary" v-on:click="addToCart(product)" v-show="canAddToCart(product)">Add to cart</button> -->
+                                <!-- <button class="btn btn-primary" @click="addToCart(product)" v-show="canAddToCart(product)">Add to cart</button> -->
+                                <button class="btn btn-primary" v-on:click="addToCart(product)" v-if="canAddToCart(product)">Add to
+                                    cart</button>
+                                <button class="btn btn-primary disabled" v-else>Add to cart</button>
+                                <span class="inventory-message"
+                                    v-if="product.availableInventory - cartCount(product.id) === 0">All
+                                    out!</span>
+                                <span class="inventory-message"
+                                    v-else-if="product.availableInventory - cartCount(product.id) < 5">Only
+                                    {{ product.availableInventory - cartCount(product.id) }} left!</span>
+                                <span class="inventory-message" v-else>Buy now!</span>
+
+                                <div class="rating">
+                                    <span v-for="n in 5" class="fa-star"
+                                        v-bind:class="{'fas': checkRating(n, product), 'far': !checkRating(n, product)}"></span>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -133,15 +149,6 @@
             el: "#app",
             data: {
                 sitename: "Vue.js Pet Depot",
-                product: {
-                    id: 1001,
-                    title: "Cat Food, 25lb bag",
-                    description: "A 25 pound bag of <em>irresistable</em>, " +
-                        "organic goodness for your cat.",
-                    price: 3599,
-                    image: "img/products/cat_food.jpg",
-                    availableInventory: 5,
-                },
                 cart: [],
                 showProduct: true,
                 order: {
@@ -164,6 +171,7 @@
                     CA: "welcome to the hotel California",
                     NV: "Nevada",
                 },
+                products: [],
             },
             filters: {
                 formatPrice: function (price) {
@@ -182,8 +190,8 @@
                 }
             },
             methods: {
-                addToCart: function () {
-                    this.cart.push(this.product.id);
+                addToCart: function (product) {
+                    this.cart.push(product.id);
                 },
                 showCheckout: function () {
                     this.showProduct = !this.showProduct;
@@ -191,15 +199,45 @@
                 submitForm: function () {
                     alert("Submitted");
                 },
-            },
-            computed: {
-                cartItemCount: function () {
-                    return this.cart.length || '';
+                checkRating: function (n, product) {
+                    return product.rating - n >= 0;
                 },
                 // short syntax ES6
-                canAddToCart() {
-                    return this.product.availableInventory > this.cartItemCount;
-                }
+                canAddToCart(product) {
+                    return product.availableInventory > this.cartCount(product.id);
+                },
+                cartCount: function(id) {
+                    let count = 0;
+                    for (var i = 0; i < this.cart.length; i++) {
+                        if (this.cart[i] === id)
+                            count++;
+                    }
+                    return count;
+                },
+            },
+            computed: {
+                cartItemCount: function() {
+                    return this.cart.length || '';
+                },
+                sortedProducts: function() {
+                    if (this.products.length > 0) {
+                        let productsArray = this.products.slice(0);
+                        function compare(a, b) {
+                            if (a.rating > b.rating)
+                                return -1;
+                            if (a.rating < b.rating)
+                                return 1;
+                            return 0;
+                        }
+                        return productsArray.sort(compare);
+                    }
+                },
+            },
+            created: function () {
+                axios.get('./products.json')
+                    .then((response) => {
+                        this.products = response.data.products;
+                    })
             },
         });
     </script>
