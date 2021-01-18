@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script src="https://unpkg.com/vue"></script>
+    </head>
+    <body>
+        <div id="app">
+            <my-component 
+                v-bind:num="myNumber"
+                v-bind:str="passedString"
+                v-bind:even="myNumber"
+                v-bind:obj="passedObject"
+                ></my-component>
+        </div>
+        <script>
+            const Component = {
+                template: "<div>Number: {{num}}<br>String: {{str}}<br>IsEven? \
+                     {{even}}<br>Object: {{obj.message}}</div>",
+                props: {
+                    num: {type: Number, required: true},
+                    str: {type: String, default: "Hello, world!"},
+                    even: {
+                        validator: (value) => {
+                            return (value % 2 === 0);
+                        }
+                    },
+                    obj: {type: Object, default: () => {return {message: "Hello from object"}}},
+                },
+            };
+            new Vue({
+                el: "#app",
+                components: {"myComponent": Component},
+                data: {
+                    passedString: "Hello from parent!",
+                    myNumber: 43,
+                    passedObject: {message: "Passed object"}
+                }
+            });
+        </script>
+    </body>
+</html>

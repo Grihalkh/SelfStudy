@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script src="https://unpkg.com/vue"></script>
+    </head>
+    <body>
+        <div id="app">
+            {{counter}}<br>
+            <button v-on:click="incrementCounter">Increment counter</button>
+            <my-component v-on:my-counter.sync="counter"></my-component>
+        </div>
+        <script>
+            const myComponent = {
+                template: `
+                <div>
+                    <button v-on:click="childIncrementCounter"
+                    >Increment from child</button>
+                </div>
+                `,
+                methods: {
+                    childIncrementCounter: function() {
+                        this.$emit("update:myCounter", this.myCounter + 1);
+                    }
+                },
+                props: ["myCounter"]
+            };
+            new Vue({
+                el: "#app",
+                data: {
+                    counter: 0
+                },
+                methods: {
+                    incrementCounter: function() {
+                        this.counter++;
+                    }
+                },
+                components: {'my-component': myComponent}
+            });
+        </script>
+    </body>
+</html>
