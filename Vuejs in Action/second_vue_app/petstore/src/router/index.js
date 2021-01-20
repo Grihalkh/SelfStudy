@@ -2,6 +2,8 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Form from '@/components/Form'
 import Main from '@/components/Main'
+import Product from '@/components/Product'
+import EditProduct from '@/components/EditProduct'
 
 Vue.use(VueRouter)
 
@@ -18,6 +20,24 @@ const routes = [
     component: Form,
     props: true,
   },
+  {
+    path: '/product/:id',
+    name: 'Id',
+    component: Product,
+    props: true,
+    children: [
+      {
+        path: 'edit',
+        name: 'Edit',
+        component: EditProduct,
+        props: true
+      }
+    ]
+  },
+  {
+    path: '*',
+    redirect: '/'
+  }
 ]
 
 const router = new VueRouter({

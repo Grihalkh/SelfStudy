@@ -6,11 +6,15 @@
                     {{sitename}}
                 </router-link>
             </a>
-            <button class="btn btn-secondary" v-on:click="showCheckout">
+            <router-link
+                active-class="active"
+                tag="button"
+                class="btn btn-secondary"
+                :to="{name: 'Form'}">
                 {{ cartItemCount }}
                 <span class="fas fa-shopping-cart"></span>
                 Checkout
-            </button>
+            </router-link>
         </div>
     </header>
 </template>
@@ -18,15 +22,12 @@
 <script>
 export default {
     name: 'my-header',
-    data: {
-        sitename: "Vue.js Pet Depot"
+    data() {
+        return {
+            sitename: "Vue.js Pet Depot"
+        };
     },
     props: ["cartItemCount"],
-    methods: {
-        showCheckout() {
-            this.$router.push({name: 'Form'});
-        }
-    }
 }
 </script>
 
@@ -34,5 +35,11 @@ export default {
 a {
     text-decoration: none;
     color: black;
+}
+
+.router-link-exact-active {
+    /* Active el style */
+    color: black;
+    /* color: darkgray; */
 }
 </style>
