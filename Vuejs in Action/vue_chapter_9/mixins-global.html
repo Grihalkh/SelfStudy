@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script src="https://unpkg.com/vue"></script>
+        <link rel="stylesheet"
+            href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    </head>
+    <body>
+        <div id="app">
+            <div id="container">
+                <h1 class="text-center">{{title}}</h1>
+                <div class="row">
+                    <div class="col-3 offset-2">
+                        <my-comp1 class="comp1"></my-comp1>
+                    </div>
+                    <div class="col-3">
+                        <my-comp2 class="comp2"></my-comp2>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script>
+            // mixin
+            Vue.mixin({
+                methods: {
+                    pressed(val) {
+                        alert(val);
+                    }
+                },
+                data() {
+                    return {
+                        item: ''
+                    };
+                }
+            });
+
+            // components
+            const comp1 = {
+                template: `
+                <div>
+                  <h1>Enter email</h1>
+                  <form>
+                    <div class="form-group">
+                      <input v-model="item"
+                        type="email"
+                        class="form-control"
+                        placeholder="Email address"/>
+                    </div>
+                    <div class="form-group">
+                      <button
+                        class="btn btn-primary btn-lg"
+                        @click.prevent="pressed(item)"
+                        >Press button 1</button>
+                    </div>
+                  </form>
+                </div>
+                `,
+            };
+
+            const comp2 = {
+                template: `
+                <div>
+                  <h1>Enter number</h1>
+                  <form>
+                    <div class="form-group">
+                      <input v-model="item"
+                        class="form-control"
+                        placeholder="Phone number"/>
+                    </div>
+                    <div class="form-group">
+                      <button
+                        class="btn btn-primary btn-lg"
+                        @click.prevent="pressed(item)"
+                        >Press button 2</button>
+                    </div>
+                  </form>
+                </div>
+                `,
+            };
+
+            // main vue
+            new Vue({
+                el: '#app',
+                data() {
+                    return {
+                        title: 'Mixin example using two components'
+                    };
+                },
+                components: {
+                    myComp1: comp1,
+                    myComp2: comp2
+                }
+            });
+        </script>
+    </body>
+</html>
