@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script src="https://unpkg.com/vue"></script>
+        <link rel="stylesheet"
+            href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    </head>
+    <body>
+        <div id="app">
+            <my-comp :header="header_num">Grigory</my-comp>
+        </div>
+        <script>
+            Vue.component('my-comp', {
+                data() {
+                    return {
+                        welcome: 'Hello, '
+                    };
+                },
+                props: ['header'],
+                render(createElement) {
+                    return createElement(
+                        'h'+this.header,
+                        {
+                            'class': 'text-center',
+                            on: {
+                                click(e) {
+                                    alert('Clicked!');
+                                }
+                            },
+                        },
+                        this.welcome + this.$slots.default[0].text
+                    );
+                }
+            });
+            new Vue({
+                el: '#app',
+                data() {
+                    return {
+                        header_num: 1
+                    };
+                }
+            });
+        </script>
+    </body>
+</html>
